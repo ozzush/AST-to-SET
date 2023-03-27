@@ -16,3 +16,6 @@ for each node incrementally. Although another data structure would be more fitti
 `symbolicStorage`, I decided to stick with `List<Expr>` to focus on other aspects of the task.
 The same reasoning is behind not providing meaningful exceptions and their handling in case of
 errors.
+
+The tests are present for variable substitution and intermediate representation. For the symbolic
+execution graph see `Main.kt`

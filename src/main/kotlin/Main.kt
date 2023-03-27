@@ -28,6 +28,6 @@ fun main() {
     )
     val se = buildExecTree(ir, input)
 
-    println("===== Symbolic Execution Graph =====")
+    println("===== Symbolic Execution Tree =====")
     se.printTree(30, 50)
 }
