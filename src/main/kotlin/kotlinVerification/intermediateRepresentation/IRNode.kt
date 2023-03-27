@@ -5,7 +5,7 @@ import kotlinVerification.abstractSyntaxTree.Expr
 import kotlinVerification.abstractSyntaxTree.If
 import utils.INDENT
 
-class IRNode(
+data class IRNode(
     val expr: Expr,
     val children: List<IRNode> = emptyList()
 ) {

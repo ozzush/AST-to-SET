@@ -1,7 +1,6 @@
 package kotlinVerification.abstractSyntaxTree
 
 import utils.readInstanceProperty
-import java.security.InvalidParameterException
 import kotlin.reflect.full.declaredMemberProperties
 
 sealed class Expr {
@@ -18,43 +17,52 @@ sealed class Expr {
 
 class Block(vararg val exprs: Expr) : Expr() {
     override fun toString() = "{ ${exprs.joinToString("; ")} }"
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Block) return false
+        return exprs.contentEquals(other.exprs)
+    }
+
+    override fun hashCode(): Int {
+        return exprs.contentHashCode()
+    }
 }
 
-class Const(val value: Int) : Expr() {
+data class Const(val value: Int) : Expr() {
     override fun toString() = value.toString()
 
     override fun substitute(symbolicStore: List<Expr>) = this
 }
 
-class Var(val name: String) : Expr() {
+data class Var(val name: String) : Expr() {
     override fun toString() = name
 
     override fun substitute(symbolicStore: List<Expr>) =
         (symbolicStore.first { it is Let && it.variable.name == name } as Let).value
 }
 
-class Let(val variable: Var, val value: Expr) : Expr() {
+data class Let(val variable: Var, val value: Expr) : Expr() {
     override fun toString() = "$variable = $value"
 
     override fun substitute(symbolicStore: List<Expr>) =
         Let(variable, value.substitute(symbolicStore))
 }
 
-class Eq(val left: Expr, val right: Expr) : Expr() {
+data class Eq(val left: Expr, val right: Expr) : Expr() {
     override fun toString() = "$left == $right"
 
     override fun substitute(symbolicStore: List<Expr>) =
         Eq(left.substitute(symbolicStore), right.substitute(symbolicStore))
 }
 
-class NEq(val left: Expr, val right: Expr) : Expr() {
+data class NEq(val left: Expr, val right: Expr) : Expr() {
     override fun toString() = "$left != $right"
 
     override fun substitute(symbolicStore: List<Expr>) =
         NEq(left.substitute(symbolicStore), right.substitute(symbolicStore))
 }
 
-class If(val cond: Expr, val thenExpr: Expr, val elseExpr: Expr? = null) : Expr() {
+data class If(val cond: Expr, val thenExpr: Expr, val elseExpr: Expr? = null) : Expr() {
     override fun toString() = "if ($cond):"
 
     companion object {
@@ -62,7 +70,7 @@ class If(val cond: Expr, val thenExpr: Expr, val elseExpr: Expr? = null) : Expr(
     }
 }
 
-class Plus(val left: Expr, val right: Expr) : Expr() {
+data class Plus(val left: Expr, val right: Expr) : Expr() {
     override fun toString() = "($left + $right)"
 
     override fun substitute(symbolicStore: List<Expr>): Expr {
@@ -73,7 +81,7 @@ class Plus(val left: Expr, val right: Expr) : Expr() {
     }
 }
 
-class Minus(val left: Expr, val right: Expr) : Expr() {
+data class Minus(val left: Expr, val right: Expr) : Expr() {
     override fun toString() = "($left - $right)"
 
     override fun substitute(symbolicStore: List<Expr>): Expr {
@@ -84,7 +92,7 @@ class Minus(val left: Expr, val right: Expr) : Expr() {
     }
 }
 
-class Mul(val left: Expr, val right: Expr) : Expr() {
+data class Mul(val left: Expr, val right: Expr) : Expr() {
     override fun toString() = "$left * $right"
 
     override fun substitute(symbolicStore: List<Expr>): Expr {
@@ -95,7 +103,7 @@ class Mul(val left: Expr, val right: Expr) : Expr() {
     }
 }
 
-class SymVal(val name: String) : Expr() {
+data class SymVal(val name: String) : Expr() {
     override fun toString() = "SymVal($name)"
 
     override fun substitute(symbolicStore: List<Expr>) = this

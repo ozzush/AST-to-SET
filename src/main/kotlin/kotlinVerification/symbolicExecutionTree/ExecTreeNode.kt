@@ -2,11 +2,9 @@ package kotlinVerification.symbolicExecutionTree
 
 import kotlinVerification.abstractSyntaxTree.Expr
 import kotlinVerification.abstractSyntaxTree.If
-import kotlinVerification.abstractSyntaxTree.Let
 import utils.INDENT
-import utils.negateExpr
 
-class ExecTreeNode(
+data class ExecTreeNode(
     val children: List<ExecTreeNode>,
     val nextExpr: Expr,
     val S: List<Expr>,
